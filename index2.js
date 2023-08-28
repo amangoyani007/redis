@@ -31,10 +31,41 @@ app.post("/", async (req, res) => {
     res.json(response)
 })
 
+app.get("/", async (req, res) => {
+    const { key } = req.body
+    const value = await client.get(key)
+    res.json(value)
+})
+
 createClient({
     url: 'redis://127.0.0.1:6380'
-  });
+});
 
-  app.listen(8080, () => {
+app.listen(8080, () => {
     console.log("Hey, now listen on port 8080!")
 });
+
+import { createCluster } from 'redis';
+
+const cluster = createCluster({
+    rootNodes: [
+        {
+            url: 'redis://127.0.0.1:16379'
+        },
+        {
+            url: 'redis://127.0.0.1:16380'
+        },
+        // ...
+    ]
+});
+
+cluster.on('error', (err) => console.log('Redis Cluster Error', err));
+
+await cluster.connect();
+
+await cluster.set('foo', 'bar');
+const value = await cluster.get('foo');
+console.log(value); // returns 'bar'
+
+await cluster.quit();
+
