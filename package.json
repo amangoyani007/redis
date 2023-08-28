@@ -1,0 +1,23 @@
+{
+  "name": "redix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "es": "^0.8.0",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "promisify": "^0.0.3",
+    "redis": "^4.6.8",
+    "redis-server": "^1.2.2",
+    "util": "^0.12.5"
+  }
+}
