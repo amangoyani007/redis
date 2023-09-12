@@ -7,6 +7,7 @@ const client = createClient(redisUrl)
 
 client.set = promisify(client.set)
 client.get = promisify(client.get)
+client.del = promisify(client.del)
 
 const app = express();
 
@@ -31,7 +32,21 @@ app.patch("/", async (req, res) => {
         const final = await client.set(key,value)
         res.json({final, msg: "value is set"})
     }
+    else{
+        res.json({msg: "key not found"})
+    }
     // res.json({updated, msg: "value"})
+})
+
+app.delete("/", async (req, res) => {
+    const { key } = req.body
+    const deletekey = await client.del(key)
+    if (deletekey) {
+        res.json({deletekey, msg: `your key : ${key} , is deleted`})
+    }
+    else{
+        res.json({msg: "enterd key is not present"})
+    }
 })
 
 app.listen(8080, () => {
