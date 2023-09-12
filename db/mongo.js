@@ -5,6 +5,6 @@ const keySchema = new mongoose.Schema({
     value: String
 });
 
-const key = mongoose.model('keyList', keySchema);
+const keyModel = mongoose.model('keyList', keySchema);
 
-module.exports = key;
+module.exports = keyModel;

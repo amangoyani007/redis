@@ -25,8 +25,9 @@ mongoose.connection
     .on('error', (err) => console.log("connection to database failed!!", err))
 
 const key = require('./db/mongo');
-const { addKeyRedis, getKeyRedis } = require("./main/newIndex");
+const { addKeyRedis, getKeyRedis, removeRedis } = require("./main/newIndex");
 const { value } = require("promisify");
+const keyModel = require("./db/mongo");
 
 // app.use(upload.array());
 app.use(express.static('public'));
@@ -45,7 +46,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/postkey', (req, res) => {
-    new key(req.body)
+    new keyModel(req.body)
         .save()
         .then((v_data) => {
             console.log(v_data);
@@ -59,11 +60,35 @@ app.post('/postkey', (req, res) => {
             res.json({ save: false })
         })
 })
+
+app.delete('/delete', async (req, res) => {
+    const key1 = req.body;
+    // console.log(key1.key);
+    try {
+        const task = await keyModel.findOneAndRemove({ key: key1.key });
+        if (!task) {
+            return res.status(404).json({ msg: `No value with key : ${key}` });
+        }
+        removeRedis(key1.key)
+        if (removeRedis()) {
+            res.status(200).json({ message: "Deleted and also deleted from redis" });
+        }
+        // res.status(200).json({ message: "Deleted" });
+
+    } catch (err) {
+        return console.log(err);
+    }
+})
+
 //key from redis
 app.get("/key", async (req, res) => {
     const { key } = req.body
     const value = await getKeyRedis(key)
-    res.json({msg: `your value is: '${value}'`})})
+    if(!value){
+        res.json({msg: "not found"})
+    }
+    res.json({ msg: `your value is: '${value}'` })
+})
 
 
 app.listen(8080, () => console.log("server started at port:8080"))

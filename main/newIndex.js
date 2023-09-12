@@ -13,9 +13,9 @@ const { promisify } = require("util");
 const redisUrl = "redis://default:2X2cX7YNHMCfTwZQDSHWpSQNa0DrzfMM@redis-12499.c264.ap-south-1-1.ec2.cloud.redislabs.com:12499"
 const client = createClient(redisUrl)
 
-if (client) {
-    console.log("Connected");
-}
+// if (client) {
+//     console.log("Connected");
+// }
 
 client.set = promisify(client.set)
 client.get = promisify(client.get)
@@ -50,7 +50,15 @@ const getKeyRedis = async (key) => {
     return value
 }
 
-module.exports = { addKeyRedis, getKeyRedis }
+const removeRedis = async(key) => {
+    const deletekey = await client.del(key)
+    if(deletekey){
+        console.log("Deleted");
+        return true
+    }
+}
+
+module.exports = { addKeyRedis, getKeyRedis, removeRedis }
 
 // app.post("/", async (req, res) => {
 //     const { key, value } = req.body;
