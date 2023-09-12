@@ -25,7 +25,7 @@ mongoose.connection
     .on('error', (err) => console.log("connection to database failed!!", err))
 
 const key = require('./db/mongo');
-const { addKeyRedis, getKeyRedis, removeRedis } = require("./main/newIndex");
+const { addKeyRedis, getKeyRedis, removeRedis, updateRedis } = require("./main/newIndex");
 const { value } = require("promisify");
 const keyModel = require("./db/mongo");
 
@@ -80,12 +80,30 @@ app.delete('/delete', async (req, res) => {
     }
 })
 
+app.patch('/update', async (req, res) => {
+    const key1 = req.body;
+    try {
+        const task = await keyModel.findOneAndUpdate({ key: key1.key }, req.body)
+        if (!task) {
+            return res.status(404).json({ msg: `No value with key : ${key}` });
+        }
+        if (task) {
+            updateRedis(key1)
+            console.log("updated in redix");
+        }
+
+        res.json(task)
+    } catch (err) {
+        return console.log(err);
+    }
+})
+
 //key from redis
 app.get("/key", async (req, res) => {
     const { key } = req.body
     const value = await getKeyRedis(key)
-    if(!value){
-        res.json({msg: "not found"})
+    if (!value) {
+        res.json({ msg: "not found" })
     }
     res.json({ msg: `your value is: '${value}'` })
 })

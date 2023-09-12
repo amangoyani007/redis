@@ -58,7 +58,11 @@ const removeRedis = async(key) => {
     }
 }
 
-module.exports = { addKeyRedis, getKeyRedis, removeRedis }
+const updateRedis = async(key1) => {
+    await client.set(key1.key, key1.value)
+}
+
+module.exports = { addKeyRedis, getKeyRedis, removeRedis, updateRedis }
 
 // app.post("/", async (req, res) => {
 //     const { key, value } = req.body;
