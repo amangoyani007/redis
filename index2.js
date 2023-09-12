@@ -9,7 +9,7 @@ app.use(json())
 
 client.on('error', err => console.log('Redis Client Error', err));
 
-await client.connect();
+// await client.connect();
 
 // await client.set('key', 'value');
 // const value = await client.get('key');
@@ -28,7 +28,7 @@ app.post("/", async (req, res) => {
     // res.json({ msg: "hi" })
     const { key, value } = req.body
     const response = await client.set(key, value)
-    res.json(response)
+    res.json({response, mag: "hi"})
 })
 
 app.get("/", async (req, res) => {
@@ -38,7 +38,7 @@ app.get("/", async (req, res) => {
 })
 
 createClient({
-    url: 'redis://127.0.0.1:6380'
+    url: 'redis://127.0.0.1:6379'
 });
 
 app.listen(8080, () => {
