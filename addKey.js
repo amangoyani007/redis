@@ -65,36 +65,5 @@ app.get("/key", async (req, res) => {
     const value = await getKeyRedis(key)
     res.json({msg: `your value is: '${value}'`})})
 
-// app.get('/:vehicleType/', (req,res)=>{
-//     vehicle.find({vehicleType: req.params.vehicleType})
-//                 .cache(req.params.vehicleType)
-//                 .then((data)=>{
-//                     if(data){
-//                         res.json({found: true, data: data})
-//                     }else{
-//                         res.json({found: false, data: null})
-//                     }
-//                 })
-//                 .catch((err)=>{
-//                     console.log(err)
-//                     res.json({found: false, data: null})
-//                 })
-// })
-
-// app.get('/:vehicleType/:sno', (req,res)=>{
-//     vehicle.findOne({serialno: req.params.sno,vehicleType: req.params.vehicleType})
-//                 .cache(req.params.vehicleType)
-//                 .then((data)=>{
-//                     if(data){
-//                         res.json({found: true, data: data})
-//                     }else{
-//                         res.json({found: false, data: null})
-//                     }
-//                 })
-//                 .catch((err)=>{
-//                     console.log(err)
-//                     res.json({found: false, data: null})
-//                 })
-// })
 
 app.listen(8080, () => console.log("server started at port:8080"))
