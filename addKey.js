@@ -34,8 +34,17 @@ app.use(express.static('public'));
 
 // ROUTES
 //data import from mongoDB
-app.get('/', (req, res) => {
-    key.find({})
+app.get('/', async (req, res) => {
+
+    const { key } = req.body
+    const value = await getKeyRedis(key)
+    
+    if (value) {
+        res.json({ msg: `your value is: '${value}'` })
+    }
+
+    if (!value) {
+        keyModel.find({})
         .then((data) => {
             res.json({ found: true, data: data });
         })
@@ -43,6 +52,8 @@ app.get('/', (req, res) => {
             console.log(err)
             res.json({ found: false, data: null });
         })
+    }
+    
 })
 
 app.post('/postkey', (req, res) => {
