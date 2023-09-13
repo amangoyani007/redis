@@ -38,22 +38,22 @@ app.get('/', async (req, res) => {
 
     const { key } = req.body
     const value = await getKeyRedis(key)
-    
+
     if (value) {
         res.json({ msg: `your value is: '${value}'` })
     }
 
     if (!value) {
         keyModel.find({})
-        .then((data) => {
-            res.json({ found: true, data: data });
-        })
-        .catch((err) => {
-            console.log(err)
-            res.json({ found: false, data: null });
-        })
+            .then((data) => {
+                res.json({ found: true, data: data });
+            })
+            .catch((err) => {
+                console.log(err)
+                res.json({ found: false, data: null });
+            })
     }
-    
+
 })
 
 app.post('/postkey', (req, res) => {
@@ -80,11 +80,14 @@ app.delete('/delete', async (req, res) => {
         if (!task) {
             return res.status(404).json({ msg: `No value with key : ${key}` });
         }
-        removeRedis(key1.key)
-        if (removeRedis()) {
+        const a = await removeRedis(key1.key)
+        // console.log(a, "1234516");
+        if (a == true) {
             res.status(200).json({ message: "Deleted and also deleted from redis" });
         }
-        // res.status(200).json({ message: "Deleted" });
+        if (a == false) {
+            res.status(200).json({ message: "not found in redis only deleted from mongoos" });
+        }
 
     } catch (err) {
         return console.log(err);

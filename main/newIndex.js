@@ -40,7 +40,10 @@ const app = express();
 
 
 const addKeyRedis = async (key, value) => {
-    const response = await client.set(key, value)
+    // const timeLife = 60 * 60 * 24;
+
+    const response = await client.set(key, value, 'EX', 100);
+    
     console.log({ response, msg: "Key added in redis" });
 }
 
@@ -56,6 +59,7 @@ const removeRedis = async(key) => {
         console.log("Deleted");
         return true
     }
+    return false    
 }
 
 const updateRedis = async(key1) => {
